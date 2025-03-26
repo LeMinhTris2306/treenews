@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CategoryPageList from "../components/categoryPage/CategoryPageList";
-
+import { useCategory } from "../utils/hooks/useCategory";
 const articles = [
   {
     id: 1,
@@ -26,30 +26,48 @@ const articles = [
 ];
 
 const CategoryPage = () => {
-  const { category } = useParams();
+  const { categoryUrl } = useParams();
+  const [category, setCategory] = useState(null);
+  const { getCategory } = useCategory();
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await getCategory(categoryUrl);
+        setCategory(response);
+        // console.log(response);
+      } catch (error) {
+        console.error("Error fetching category:", error);
+      }
+    };
+    fetchCategory();
+  }, [categoryUrl]);
   return (
     <>
-      <div className="container-sm" id="category-page">
-        <div className="p-2 breadcrumb" id="breadcrumb-top">
-          <h1>{category}</h1>
-        </div>
-        <hr />
-        <div className="d-flex flex-column">
-          <div className="card d-flex flex-column hero-card border-0">
-            <img
-              src="https://static-images.vnncdn.net/vps_images_publish/000001/000003/2025/3/2/atletico-khieu-chien-real-madrid-doi-chan-vang-julian-alvarez-42060.jpg?width=360&s=J5a9XWS1afKdZXMb4mAg0g"
-              className="card-img-top img-fluid rounded"
-            />
-            <div className="card-body align-items-center justify-content-center">
-              <div className="card-text text-truncate-container">
-                <h3>context</h3>
+      {category ? (
+        <div className="container-sm" id="category-page">
+          <div className="p-2 breadcrumb" id="breadcrumb-top">
+            <h1>{category.categoryName}</h1>
+          </div>
+          <hr />
+          <div className="d-flex flex-column">
+            <div className="card d-flex flex-column hero-card border-0">
+              <img
+                src="https://static-images.vnncdn.net/vps_images_publish/000001/000003/2025/3/2/atletico-khieu-chien-real-madrid-doi-chan-vang-julian-alvarez-42060.jpg?width=360&s=J5a9XWS1afKdZXMb4mAg0g"
+                className="card-img-top img-fluid rounded"
+              />
+              <div className="card-body align-items-center justify-content-center">
+                <div className="card-text text-truncate-container">
+                  <h3>context</h3>
+                </div>
               </div>
             </div>
           </div>
+          <hr />
+          <CategoryPageList />
         </div>
-        <hr />
-        <CategoryPageList />
-      </div>
+      ) : (
+        <p>Loading...</p>
+      )}
     </>
   );
 };

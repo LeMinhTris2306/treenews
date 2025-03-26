@@ -6,6 +6,11 @@ export const useArticle = () => {
     return response;
   };
 
+  const getListArticleHandler = async (n) => {
+    const response = await articleApi.getListArticle(n);
+    return response;
+  };
+
   const createArticleHanlder = async (data, files) => {
     const response = await articleApi.createArticle(data, files);
     return response;
@@ -13,6 +18,7 @@ export const useArticle = () => {
 
   return {
     getArticle: getArticleHandler,
+    getListArticle: getListArticleHandler,
     createArticle: createArticleHanlder,
   };
 };

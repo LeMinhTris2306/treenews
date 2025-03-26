@@ -6,7 +6,13 @@ export const useCategory = () => {
     return response;
   };
 
+  const getCategoryHandler = async (urlDisplay) => {
+    const response = await categoryApi.getCategory(urlDisplay);
+    return response;
+  };
+
   return {
     getListCategory: getListCategoryHandler,
+    getCategory: getCategoryHandler,
   };
 };

@@ -10,6 +10,11 @@ const getArticle = async (id) => {
   return response.data;
 };
 
+const getListArticle = async (n) => {
+  const response = await axios.get(`${API_URL}?n=${n}`);
+  return response.data;
+};
+
 const createArticle = async (articleDetail, files) => {
   try {
     const formData = new FormData();
@@ -37,5 +42,6 @@ const createArticle = async (articleDetail, files) => {
 
 export default {
   getArticle,
+  getListArticle,
   createArticle,
 };

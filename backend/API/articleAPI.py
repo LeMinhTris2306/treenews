@@ -49,7 +49,6 @@ async def create_article(article: ArticleModel = Body(...), files: List[UploadFi
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Có lỗi khi upload ảnh, lỗi: {e}")
     # <-- đổi url hình ảnh -->
-    print(article_info['details'])
     for detail in article_info['details']:
         if detail['type'] == "image":
             detail['imgUrl'] = list_img_url.pop(0)

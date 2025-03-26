@@ -39,17 +39,17 @@ async def get_list_categories():
     return CategoryCollection(categories=cats)
 
 @router.get(
-    "/{id}",
+    "/{urlDisplay}",
     response_description="Get a single category",
     response_model=CategoryModel,
     response_model_by_alias=False,
 )
-async def show_category(id: str):
+async def show_category(urlDisplay: str):
     """
     Get the record for a specific category, looked up by `id`.
     """
     if (
-        cat := cat_collection.find_one({"_id": ObjectId(id)})
+        cat := cat_collection.find_one({"urlDisplay": urlDisplay})
     ) is not None:
         return cat
 

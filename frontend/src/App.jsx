@@ -29,7 +29,7 @@ function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/createarticle" element={<CreateArticle />} />
         </Route>
-        <Route path="/category/:category" element={<CategoryPage />} />
+        <Route path="/category/:categoryUrl" element={<CategoryPage />} />
         <Route path="/article/:articleid" element={<Article />} />
       </Routes>
       <Footer />
