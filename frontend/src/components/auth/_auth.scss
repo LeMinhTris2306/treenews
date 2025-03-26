@@ -1,0 +1,26 @@
+@media only screen and (max-width: 680px) {
+  .card {
+    width: 100% !important;
+  }
+}
+
+.warning {
+  color: rgb(238, 49, 49);
+}
+
+.main-content {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+#register-section #login-section {
+  .card {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    width: 600px;
+    min-height: 100vh;
+  }
+}

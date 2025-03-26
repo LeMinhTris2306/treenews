@@ -1,0 +1,25 @@
+$lighter-main: #0b92e6;
+$color-dark: #222;
+$color-grey: #6d6c6c;
+$color-lightgrey: #dbdbdb;
+$color-smoke: #f6f6f6;
+$color-blue: #0070ba;
+
+@mixin flex($justify, $align, $direction) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+  flex-direction: $direction;
+}
+
+@import "global";
+@import "utilities";
+
+@import "../components/auth/auth";
+@import "../components/account/accountDetail";
+@import "../components/layout/header";
+@import "../components/layout/footer";
+@import "../components/Home/home";
+@import "../components/categoryPage/categoryPage";
+@import "../components/article/article";
+@import "../components/createArticle/createArticle";
