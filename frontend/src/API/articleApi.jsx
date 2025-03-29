@@ -6,13 +6,24 @@ import { Form } from "react-hook-form";
 const API_URL = variables.ARTICLE_URL;
 
 const getArticle = async (id) => {
-  const response = await axios.get(`${API_URL}${id}`);
-  return response.data;
+  try {
+    const response = await axios.get(`${API_URL}${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const getListArticle = async (n) => {
-  const response = await axios.get(`${API_URL}?n=${n}`);
-  return response.data;
+const getListArticle = async (n, skip, categoryId = null) => {
+  const url = `${API_URL}${
+    categoryId !== null ? `category/${categoryId}` : ""
+  }?n=${n}&skip=${skip}`;
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const createArticle = async (articleDetail, files) => {

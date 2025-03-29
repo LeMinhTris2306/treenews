@@ -71,11 +71,22 @@ async def create_article(article: ArticleModel = Body(...), files: List[UploadFi
     response_model=ArticleCollection,
     response_model_by_alias=False,
 )
-async def get_list_articles(n: int):
+async def get_list_articles(n: int, skip: int):
     """
     Tìm n số bài báo
     """
-    articles = article_collection.find().sort('uploadDay', -1).to_list(n)
+    articles = article_collection.find().sort('uploadDay', -1).skip(skip=skip).to_list(n)
+    return ArticleCollection(articles=articles)
+
+@router.get("/category/{categoryid}", response_description="get a list number of articles with specific category",
+    response_model=ArticleCollection,
+    response_model_by_alias=False,)
+async def get_list_articles_by_category_id(categoryid: str, n: int, skip: Optional[int]):
+    """
+        Tìm n số bài báo với danh mục cụ thể
+    """
+
+    articles = article_collection.find({'categoryId': categoryid}).sort('uploadDay', -1).skip(skip if skip else 0).limit(n).to_list(n)
     return ArticleCollection(articles=articles)
 
 @router.get(

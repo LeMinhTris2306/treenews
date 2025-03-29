@@ -28,18 +28,12 @@ const articles = [
 ];
 const Home = () => {
   const [listNews, setListNews] = useState(null);
-  const navigate = useNavigate();
   const { getListArticle } = useArticle();
   useEffect(() => {
     const fetchListNews = async () => {
       try {
-        const news = await getListArticle(12);
+        const news = await getListArticle(12, 0);
         setListNews(news.articles);
-        console.log(
-          news.articles[0].details.find((detail) => detail.type === "image")
-            ?.imgUrl
-        );
-        console.log(new Date().toLocaleTimeString("vi-VN"));
       } catch (error) {
         console.log(error);
       }

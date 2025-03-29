@@ -7,7 +7,10 @@ const ArticleList = (props) => {
       <div className="row">
         {listNews.slice(0, 4).map((news) => (
           <div className="col-3" key={news.id}>
-            <div className="card d-flex flex-col border-0">
+            <Link
+              className="card d-flex flex-col border-0 link-underline link-underline-opacity-0"
+              to={`/article/${news.id}`}
+            >
               <img
                 className="card-img-top rounded img-fluid"
                 src={
@@ -15,9 +18,9 @@ const ArticleList = (props) => {
                 }
               ></img>
               <div className="card-body overflow-hidden p-0 m-1">
-                <div className="text-truncate-container">{news.context}</div>
+                <div className="text-truncate-container">{news.title}</div>
               </div>
-            </div>
+            </Link>
           </div>
         ))}
       </div>
