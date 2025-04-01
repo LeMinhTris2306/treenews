@@ -13,7 +13,9 @@ const CategoryPage = () => {
 
   const fetchNews = async (n, skip, categoryId) => {
     try {
-      const response = await getListArticle(n, skip, categoryId);
+      const response = await getListArticle(n, skip, {
+        categoryId: categoryId,
+      });
       if (response && response.articles.length > 0) {
         setListNews(response.articles);
       } else {

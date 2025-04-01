@@ -29,8 +29,9 @@ const CategoryPageList = (props) => {
 
   const fetchNews = async (n, skip, categoryId) => {
     try {
-      const response = await getListArticle(n, skip, categoryId);
-
+      const response = await getListArticle(n, skip, {
+        categoryId: categoryId,
+      });
       return response.articles;
     } catch (error) {
       console.error("Error fetching category:", error);

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../../utils/hooks/useUser";
 
 import AccountModal from "./AccountModal";
+import ListCreatedArticles from "./ListCreatedArticles";
 
 const AccountDetail = ({ user }) => {
   const { logout, updateUser } = useUser();
@@ -44,7 +45,7 @@ const AccountDetail = ({ user }) => {
   };
   return (
     <>
-      <section className="main-content-warp">
+      <section className="">
         <div className="row">
           <div className="col-lg-4" id="profile-avatar-section">
             <div className="card mb-4">
@@ -201,6 +202,7 @@ const AccountDetail = ({ user }) => {
             </div>
           </div>
         </div>
+        <ListCreatedArticles author={user.id} />
       </section>
     </>
   );

@@ -35,10 +35,15 @@
       border: 0px;
     }
   }
-  #article-list {
-    .card-img-top {
-      // min-height: 166px;
-      height: 166px;
-    }
+}
+
+.sub-article {
+  .card-img-top {
+    // min-height: 166px;
+    height: 175px;
+  }
+  .card-text {
+    height: 75px;
+    color: black;
   }
 }

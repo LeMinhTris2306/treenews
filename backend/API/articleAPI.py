@@ -89,6 +89,13 @@ async def get_list_articles_by_category_id(categoryid: str, n: int, skip: Option
     articles = article_collection.find({'categoryId': categoryid}).sort('uploadDay', -1).skip(skip if skip else 0).limit(n).to_list(n)
     return ArticleCollection(articles=articles)
 
+@router.post("/custom", response_description="get a list number of articles with custom argument",
+    response_model=ArticleCollection,
+    response_model_by_alias=False,)
+async def get_list_articles_custom(n: int, skip: int, args: Optional[dict] = None):
+    articles = article_collection.find(args if args else None).sort('uploadDay', -1).skip(skip=skip).to_list(n if n > 0 else None)
+    return ArticleCollection(articles=articles)
+
 @router.get(
     "/{id}",
     response_description="Get a single article",

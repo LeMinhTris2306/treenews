@@ -6,8 +6,8 @@ export const useArticle = () => {
     return response;
   };
 
-  const getListArticleHandler = async (n, skip, categoryId = null) => {
-    const response = await articleApi.getListArticle(n, skip, categoryId);
+  const getListArticleHandler = async (n, skip, args = null) => {
+    const response = await articleApi.getListArticle(n, skip, args);
     return response;
   };
 

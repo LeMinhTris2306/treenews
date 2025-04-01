@@ -14,12 +14,10 @@ const getArticle = async (id) => {
   }
 };
 
-const getListArticle = async (n, skip, categoryId = null) => {
-  const url = `${API_URL}${
-    categoryId !== null ? `category/${categoryId}` : ""
-  }?n=${n}&skip=${skip}`;
+const getListArticle = async (n, skip, args = null) => {
+  const url = `${API_URL}custom?n=${n}&skip=${skip}`;
   try {
-    const response = await axios.get(url);
+    const response = await axios.post(url, args ? args : null);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -45,6 +43,8 @@ const createArticle = async (articleDetail, files) => {
     console.log(error);
     if (error.response && error.response.status === 409) {
       return { error: "Trùng tiêu đề" };
+    } else if (error.response && error.response.status === 400) {
+      return { error: "Bài báo yêu cầu ít nhất 1 hình ảnh đi kèm" };
     } else {
       return { error: "Có lỗi đã xảy ra" };
     }
