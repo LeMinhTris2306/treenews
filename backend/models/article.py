@@ -73,10 +73,11 @@ class ArticleModel(BaseModel):
 class UpdateArticleModel(BaseModel):
     title: Optional[str] = None
     uploadDay: Optional[str] = None
-    detail: Optional[List[DetailModel]] = None
+    details: Optional[List[DetailModel]] = None
     displayName: Optional[str] = None
     authorId: Optional[str] = None
     categoryId: Optional[str] = None
+
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         json_encoders={ObjectId: str},

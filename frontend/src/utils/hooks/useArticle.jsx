@@ -16,9 +16,19 @@ export const useArticle = () => {
     return response;
   };
 
+  const updateArticleHandler = async (data, files, id) => {
+    const response = await articleApi.updateArticle(data, files, id);
+    return response;
+  };
+  const deleteArticleHandler = async (id) => {
+    const response = await articleApi.deleteArticle(id);
+    return response;
+  };
   return {
     getArticle: getArticleHandler,
     getListArticle: getListArticleHandler,
     createArticle: createArticleHanlder,
+    updateArticle: updateArticleHandler,
+    deleteArticle: deleteArticleHandler,
   };
 };

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useArticle } from "../../utils/hooks/useArticle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ListCreatedArticles = (props) => {
   const renderPagination = (noPage) => {
     const handlePageChange = (option) => {
       if (option === "next" && currentPage < noPage - 1)
         setCurrentPage(currentPage + 1);
-      if (option === "previous" && currentPage > 0)
+      else if (option === "previous" && currentPage > 0)
         setCurrentPage(currentPage - 1);
     };
     const tmpArray = Array.from({ length: noPage }, (_, index) => index);
@@ -53,7 +53,8 @@ const ListCreatedArticles = (props) => {
   };
 
   const { author } = props;
-  const { getListArticle } = useArticle();
+  const navigate = useNavigate();
+  const { getListArticle, deleteArticle } = useArticle();
   const [loading, setLoading] = useState(true);
   const [listNews, setListNews] = useState(null);
   const [displayNews, setDisplayNews] = useState(null);
@@ -61,21 +62,20 @@ const ListCreatedArticles = (props) => {
   const [noPage, setNoPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
 
+  const fetchListNews = async () => {
+    try {
+      const news = await getListArticle(0, 0, {
+        authorId: author,
+      });
+      setListNews(news.articles);
+      setDisplayNews(news.articles);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchListNews = async () => {
-      try {
-        const news = await getListArticle(0, 0, {
-          authorId: author,
-        });
-        setListNews(news.articles);
-        setDisplayNews(news.articles);
-        console.log(news.articles);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchListNews();
   }, []);
 
@@ -87,10 +87,21 @@ const ListCreatedArticles = (props) => {
     const result = listNews.filter((article) =>
       article.title.toLowerCase().includes(keyword.toLowerCase())
     );
-    console.log(result);
     setDisplayNews(result);
   };
-  console.log(currentPage);
+
+  const handleDelete = async (id) => {
+    const result = confirm("Xác nhận xóa bài báo?");
+    if (result) {
+      try {
+        await deleteArticle(id);
+        alert("Bài báo được xóa thành công");
+        fetchListNews();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   return (
     <>
       <div className="py-2 row">
@@ -143,10 +154,20 @@ const ListCreatedArticles = (props) => {
                     </Link>
                     <div className="card-footer">
                       <div className="d-flex flex-row justify-content-center">
-                        <button className="btn btn-outline-primary mx-1">
+                        <button
+                          className="btn btn-outline-primary mx-1"
+                          type="button"
+                          onClick={() => navigate(`/edit/${news.id}`)}
+                        >
                           Chỉnh sửa
                         </button>
-                        <button className="btn btn-outline-danger mx-1">
+                        <button
+                          className="btn btn-outline-danger mx-1"
+                          type="button"
+                          onClick={() => {
+                            handleDelete(news.id);
+                          }}
+                        >
                           xóa
                         </button>
                       </div>

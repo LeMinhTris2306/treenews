@@ -21,6 +21,8 @@ const Article = () => {
     };
     fetchArticle();
   }, []);
+
+  console.log(article ? article : null);
   return (
     <>
       <div className="container" id="article-main">

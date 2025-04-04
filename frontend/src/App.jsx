@@ -11,6 +11,7 @@ import Footer from "./components/layout/Footer";
 import CategoryPage from "./pages/CategoryPage";
 import Article from "./pages/Article";
 import CreateArticle from "./pages/CreateArticle";
+import EditArticle from "./pages/EditArticle";
 
 import ProtectedRoute from "./protectedRoute";
 import { UserContext } from "./UserContext";
@@ -28,6 +29,7 @@ function App() {
         <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/account" element={<Account />} />
           <Route path="/createarticle" element={<CreateArticle />} />
+          <Route path="/edit/:articleId" element={<EditArticle />} />
         </Route>
         <Route path="/category/:categoryUrl" element={<CategoryPage />} />
         <Route path="/article/:articleid" element={<Article />} />

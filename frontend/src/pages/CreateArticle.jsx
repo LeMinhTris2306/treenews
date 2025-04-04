@@ -23,6 +23,7 @@ const CreateArticle = () => {
   const { createArticle } = useArticle();
 
   const onSubmit = async (data) => {
+    console.log(data);
     if (!data.categoryId) {
       // Thiết lập lỗi thủ công nếu không chọn category
       setError("categoryId", {
@@ -37,15 +38,24 @@ const CreateArticle = () => {
     const detail = [];
     entries.slice(3).map((entry, index) => {
       const [key, value] = entry;
+      console.log([key, value]);
       if (key.includes("Description")) return null;
       else if (key.includes("picture")) {
-        const imgDescription = entries[index + 4][1]; // index +4 vì slice bắt đầu từ index thứ 3, lấy index kế tiếp nên 3+1 = 4
-        files.push(value[0]);
-        detail.push({
-          imgTitle: imgDescription,
-          imgUrl: value[0].name,
-          type: "image",
-        });
+        if (value.length == 0) {
+          setError("content", {
+            type: "manual",
+            message: "Các mục nội dung hình ảnh bị thiếu",
+          });
+          return;
+        } else {
+          const imgDescription = entries[index + 4][1]; // index +4 vì slice bắt đầu từ index thứ 3, lấy index kế tiếp nên 3+1 = 4
+          files.push(value[0]);
+          detail.push({
+            imgTitle: imgDescription,
+            imgUrl: value[0].name,
+            type: "image",
+          });
+        }
       } else {
         detail.push({ detail: value.split("\n"), type: "text" });
       }
@@ -128,13 +138,18 @@ const CreateArticle = () => {
                       </div>
                     )}
                   </div>
-                  <div className="my-2">
+                  {/* <div className="my-2">
                     <p className="mb-2">Mô tả</p>
                     <ArticleTextarea {...register("description")} />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="py-2" id="create-article-content">
                   <label htmlFor="">Nội dung:</label>
+                  {errors.content && (
+                    <div className="error-message" style={{ color: "red" }}>
+                      {errors.content.message}
+                    </div>
+                  )}
                   <ul>
                     {items.map((item) => (
                       <li className="d-flex flex-row py-2" key={item.id}>
