@@ -20,17 +20,27 @@ const Article = () => {
       }
     };
     fetchArticle();
-  }, []);
+    window.scrollTo(0, 0);
+  }, [articleid]);
 
   console.log(article ? article : null);
   return (
     <>
       <div className="container" id="article-main">
-        {article ? <ArticleDetail article={article} /> : <p>loading...</p>}
-        <div className="my-4">
-          <h3>Các bài báo liên quan</h3>
-        </div>
-        <RecommendArticle />
+        {article ? (
+          <>
+            <ArticleDetail article={article} />
+            <div className="my-4">
+              <h3>Các bài báo liên quan</h3>
+            </div>
+            <RecommendArticle
+              categoryId={article.categoryId}
+              title={article.title}
+            />
+          </>
+        ) : (
+          <p>loading...</p>
+        )}
       </div>
     </>
   );

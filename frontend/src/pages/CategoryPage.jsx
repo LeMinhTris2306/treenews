@@ -40,7 +40,6 @@ const CategoryPage = () => {
 
     fetchCategory();
   }, [categoryUrl]);
-  if (listNews) console.log(listNews);
   return (
     <>
       {listNews ? (

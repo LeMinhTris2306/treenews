@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useArticle } from "../../utils/hooks/useArticle";
 
 const articles = [
   {
@@ -29,21 +31,54 @@ const articles = [
   },
 ];
 
-const RecommendArticle = () => {
+const RecommendArticle = (props) => {
+  const { categoryId, title } = props;
+  const [listNews, setListNews] = useState([]);
+  const { getListArticle } = useArticle();
+  useEffect(() => {
+    const fetchNews = async (n, skip, categoryId) => {
+      try {
+        const response = await getListArticle(n, skip, {
+          categoryId: categoryId,
+          title: { $ne: title },
+        });
+        if (response && response.articles.length > 0) {
+          setListNews(response.articles);
+        } else {
+          setListNews([]);
+        }
+      } catch (error) {
+        console.error("Error fetching category:", error);
+      }
+    };
+
+    fetchNews(5, 0, categoryId);
+  }, [title]);
+
   return (
     <>
       <div className="d-flex flex-column" id="recommend">
-        {articles.map((article) => (
-          <div className="py-2" key={article.id}>
+        {listNews && listNews.map((news) => console.log(Object.entries(news)))}
+        {listNews.map((news) => (
+          <Link
+            className="py-2 link-underline link-underline-opacity-0"
+            key={news.id}
+            to={`/article/${news.id}`}
+          >
             <div className="card d-flex flex-row">
-              <img className="card-img-top img-fluid" src={article.url}></img>
+              <img
+                className="card-img-top img-fluid"
+                src={
+                  news.details.find((detail) => detail.type === "image")?.imgUrl
+                }
+              ></img>
               <div className="card-body overflow-hidden p-3 pt-4 me-2">
                 <div className="card-text text-truncate-container me-5">
-                  <h5>{article.context}</h5>
+                  <h5>{news.title}</h5>
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </>

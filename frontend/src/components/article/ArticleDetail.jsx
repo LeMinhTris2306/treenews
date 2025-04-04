@@ -30,7 +30,7 @@ const ArticleDetail = (props) => {
                         className="card-img-top img-fluid rounded"
                         src={detail.imgUrl}
                       ></img>
-                      <p className="mt-1">
+                      <p className="mt-1 ms-2">
                         <em>{detail.imgTitle}</em>
                       </p>
                     </div>
