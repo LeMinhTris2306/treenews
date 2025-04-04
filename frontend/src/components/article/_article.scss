@@ -15,6 +15,9 @@
     }
     .image-detail {
       max-width: 900px;
+      img {
+        max-height: 600px;
+      }
     }
   }
 }

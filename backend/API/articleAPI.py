@@ -152,7 +152,7 @@ async def update_article(id: str, article: UpdateArticleModel = Body(...), files
             #Xóa các hình ảnh cũ trước khi cập nhật
             existed_article = article_collection.find_one({"title": article['title']})
             delete_result = deleteImages(existed_article)
-
+            print("debvuging")
             if delete_result:
                 authorId = existed_article['authorId']
                 article_assets_path = os.path.join(server_storage_path, authorId)
@@ -171,6 +171,7 @@ async def update_article(id: str, article: UpdateArticleModel = Body(...), files
                         detail['imgUrl'] = list_img_url.pop(0)
 
         except Exception as e:
+            print(e)
             raise HTTPException(status_code=500, detail=f"error: {e}") 
         
         #Băt đầu cập nhật

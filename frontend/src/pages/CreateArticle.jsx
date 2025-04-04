@@ -36,7 +36,7 @@ const CreateArticle = () => {
     const firstPartArticle = entries.slice(0, 3);
     const files = [];
     const detail = [];
-    entries.slice(3).map((entry, index) => {
+    entries.slice(2).map((entry, index) => {
       const [key, value] = entry;
       console.log([key, value]);
       if (key.includes("Description")) return null;
@@ -48,7 +48,7 @@ const CreateArticle = () => {
           });
           return;
         } else {
-          const imgDescription = entries[index + 4][1]; // index +4 vì slice bắt đầu từ index thứ 3, lấy index kế tiếp nên 3+1 = 4
+          const imgDescription = entries[index + 3][1]; // index +4 vì slice bắt đầu từ index thứ 3, lấy index kế tiếp nên 3+1 = 4
           files.push(value[0]);
           detail.push({
             imgTitle: imgDescription,

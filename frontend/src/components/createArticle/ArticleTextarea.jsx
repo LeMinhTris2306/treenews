@@ -9,13 +9,6 @@ const ArticleTextarea = forwardRef((props, ref) => {
     if (onChange) onChange(e);
   };
 
-  useEffect(() => {
-    // If there's an initial value, we can trigger the change behavior manually
-    console.log(ref.current);
-    if (ref.current) {
-      handleChange({ target: ref.current });
-    }
-  }, []);
   return (
     <textarea
       {...rest}

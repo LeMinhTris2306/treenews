@@ -100,7 +100,7 @@ const EditArticle = () => {
     const firstPartArticle = entries.slice(0, 3);
     const files = [];
     const detail = [];
-    entries.slice(3).map((entry, index) => {
+    entries.slice(2).map((entry, index) => {
       const [key, value] = entry;
       if (key.includes("Description")) return null;
       else if (key.includes("picture")) {
@@ -111,7 +111,7 @@ const EditArticle = () => {
           });
           return;
         } else {
-          const imgDescription = entries[index + 4][1]; // index +4 vì slice bắt đầu từ index thứ 3, lấy index kế tiếp nên 3+1 = 4
+          const imgDescription = entries[index + 3][1]; // index +3 vì slice bắt đầu từ index thứ 2, lấy index kế tiếp nên 2+1 = 3
           files.push(value[0]);
           detail.push({
             imgTitle: imgDescription,
