@@ -1,19 +1,25 @@
-from mongodb import mongodb
+from mongodb.mongodb import MongoDB
 from pymongo import ReturnDocument
 from fastapi import APIRouter, Body, HTTPException, status, UploadFile, File
 from fastapi.responses import Response, FileResponse
 from models.article import *
-
+from utils.utils import create_record
+from datetime import datetime
+import hashlib
 import os, shutil
 
 router = APIRouter()
-cat_collection = mongodb.create_connection('categories')
-user_collection = mongodb.create_connection('user')
-article_collection = mongodb.create_connection('article')
-comment_collection = mongodb.create_connection('comments')
+
+mongo = MongoDB("mongodb+srv://chebiche:admin@atlascluster.q8ewu8y.mongodb.net/", "treenews")
+
+cat_collection = mongo.get_collection('categories')
+user_collection = mongo.get_collection('user')
+article_collection = mongo.get_collection('article')
+comment_collection = mongo.get_collection('comments')
 
 server_storage_path = r"D:\Python\server_storage"
-url_path = "http://localhost:8000/article/getimage/" #idtacgia/idbaibao/img.jpg, frontend sẽ dùng cái này để fetch hình ảnh
+img_url_path = "http://localhost:8000/article/getimage/" #idtacgia/idbaibao/img.jpg, frontend sẽ dùng cái này để fetch hình ảnh
+audio_url_path = "http://localhost:8000/article/record/"
 
 class ResponseModel(BaseModel):
     Article: ArticleModel = Field(...)
@@ -41,40 +47,68 @@ async def create_article(article: ArticleModel = Body(...), files: List[UploadFi
     """
         Hàm này lưu hình ảnh xong lưu bài báo sau
     """
-    
-    article_info = article.model_dump(by_alias=True, exclude=["id"])
-    authorId = article_info['authorId']
-    if (article := article_collection.find_one({"title": article_info.get('title')})) is not None:
-        raise HTTPException(status_code=409, detail=f"Tựa đề {article_info.get('title')} đã được dùng")
-    
-    list_img_url = []
+    with mongo.client.start_session() as session:
+        try:
+            session.start_transaction()
+            article_info = article.model_dump(by_alias=True, exclude=["id"])
 
-    article_assets_path = os.path.join(server_storage_path, authorId)
-    os.makedirs(article_assets_path, exist_ok=True)
-    try:
-        for file in files:
-            file_location = os.path.join(article_assets_path, file.filename)
-            with open(file_location, "wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
-            list_img_url.append(f"{url_path}{authorId}%5C{file.filename}")     
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Có lỗi khi upload ảnh, lỗi: {e}")
-    # <-- đổi url hình ảnh -->
-    for detail in article_info['details']:
-        if detail['type'] == "image":
-            detail['imgUrl'] = list_img_url.pop(0)
+            record_name = None
+            if article_info['record']:
+                current_time = datetime.now().isoformat()
+                record_name = hashlib.md5(current_time.encode()).hexdigest()
 
-    # <-- Lưu bài báo -->
-    new_article = article_collection.insert_one(article_info)
-          
-    inserted_article = article_collection.find_one({
-        "_id": new_article.inserted_id
-    })
-    
-    return {
-        "Article": inserted_article,
-        "Filenames": [file.filename for file in files]
-    }
+            #Kiểm tra trùng tiêu đề
+            authorId = article_info['authorId']
+            if (article := article_collection.find_one({"title": article_info.get('title')})) is not None:
+                raise HTTPException(status_code=409, detail=f"Tựa đề {article_info.get('title')} đã được dùng")
+            
+            result = article_collection.insert_one(article_info, session=session)
+            new_article_id = str(result.inserted_id)
+
+            #Xử lý lưu ảnh + đường dẫn
+            article_assets_path = os.path.join(server_storage_path, authorId)
+            os.makedirs(article_assets_path, exist_ok=True)
+            
+            list_img_url = []
+            try:
+                for file in files:
+                    if file.filename.endswith(".wav"):
+                        #Mỗi bài báo 1 file record
+                        file_location = os.path.join(article_assets_path, f"{record_name}.wav")
+                        with open(file_location, "wb") as buffer:
+                            shutil.copyfileobj(file.file, buffer)
+                    else:
+                        image_name, file_extension = file.filename.rsplit(".", 1)
+                        file_location = os.path.join(article_assets_path, f"{image_name}_{new_article_id}.{file_extension}")
+                        with open(file_location, "wb") as buffer:
+                            shutil.copyfileobj(file.file, buffer)
+                        list_img_url.append(f"{img_url_path}{authorId}%5C{image_name}_{new_article_id}.{file_extension}")                
+            except Exception as e:
+                raise HTTPException(status_code=401, detail=f"Có lỗi khi upload ảnh, lỗi: {e}")
+            
+            # <-- đổi url các file -->
+            for detail in article_info['details']:
+                if detail['type'] == "image":
+                    detail['imgUrl'] = list_img_url.pop(0)
+            if record_name:
+                article_info['record'] = f"{audio_url_path}{authorId}%5C{record_name}.wav"
+
+            update_result = article_collection.find_one_and_update(
+                {"_id": ObjectId(new_article_id)},
+                {"$set": article_info},
+                session=session,
+                return_document=ReturnDocument.AFTER,
+            )
+
+            session.commit_transaction()
+            
+            return {
+                "Article": update_result,
+                "Filenames": [file.filename for file in files]
+            }
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=500, detail=f"Có lỗi khi upload ảnh, lỗi: {e}")
 
 @router.get(
     "/",
@@ -104,7 +138,7 @@ async def get_list_articles_by_category_id(categoryid: str, n: int, skip: Option
     response_model=ArticleCollection,
     response_model_by_alias=False,)
 async def get_list_articles_custom(n: int, skip: int, args: Optional[dict] = None):
-    articles = article_collection.find(args if args else None).sort('uploadDay', -1).skip(skip=skip).to_list(n if n > 0 else None)
+    articles = article_collection.find(args if args else None).sort('_id', -1).skip(skip=skip).to_list(n if n > 0 else None)
     return ArticleCollection(articles=articles)
 
 @router.get(
@@ -124,7 +158,6 @@ async def show_article(id: str):
         for item in article['details']:
             if item['type'] == 'image':
                 imgPath.append(str(item['imgUrl']).split("/")[-1].split("%5C"))   
-        print(imgPath)
         return article
 
     raise HTTPException(status_code=404, detail=f"Không tìm thấy bài báo {id}")
@@ -162,7 +195,7 @@ async def update_article(id: str, article: UpdateArticleModel = Body(...), files
                     file_location = os.path.join(article_assets_path, file.filename)
                     with open(file_location, "wb") as buffer:
                         shutil.copyfileobj(file.file, buffer)
-                    list_img_url.append(f"{url_path}{authorId}%5C{file.filename}")
+                    list_img_url.append(f"{img_url_path}{authorId}%5C{file.filename}")
 
                 #đổi url hình ảnh                
                 for detail in article['details']:
@@ -196,6 +229,11 @@ async def delete_article(id: str):
     if article is not None:
         try:
             imgPath = []
+            #Xử lý xoá file record
+            if article['record'] is not None:
+                record_name = str(article['record']).split("/")[-1]
+                os.remove(os.path.join(server_storage_path, "audio", record_name))
+            
             for item in article['details']:
                 if item['type'] == 'image':
                     imgPath.append(str(item['imgUrl']).split("/")[-1].split("%5C"))   
@@ -209,7 +247,7 @@ async def delete_article(id: str):
         return Response(status_code=status.HTTP_204_NO_CONTENT)        
 
     else:
-        raise HTTPException(status_code=404, detail=f"category {id} not found")
+        raise HTTPException(status_code=404, detail=f"article {id} not found")
 
 @router.get("/getimage/{filename}")
 async def get_article_image(filename: str):
@@ -217,3 +255,40 @@ async def get_article_image(filename: str):
     if os.path.exists(file_path):
         return FileResponse(file_path)
     raise HTTPException(status_code=404, detail="Image not found")
+
+@router.post("/addRecord/{article_id}")
+async def add_record(article_id: str):
+    article = article_collection.find_one({"_id": ObjectId(article_id)})
+    script = ""
+    if article:
+        article_detail = article['details']
+        for detail in article_detail:
+            if detail['type'] == "text":
+                text = " ".join(detail['detail'])
+                script = script + text + " "
+    else:
+        raise HTTPException(status_code=404, detail="article {id} not found")
+
+    try:
+        output_dir = os.path.join(server_storage_path, "audio")
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, f"{article_id}.wav")
+        create_record(text=script, output_path=output_path)
+        article['record'] = f"{audio_url_path}{article_id}.wav"
+        update_result = article_collection.find_one_and_update(
+            {"_id": ObjectId(article_id)},
+            {"$set": article},
+            return_document=ReturnDocument.AFTER,
+        )
+        if update_result is not None:
+            return article_id
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail=f"An error has occured, {e}")
+
+@router.get("/record/{filename}")
+async def get_record(filename: str):
+    file_path = os.path.join(server_storage_path, filename)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="Record not found")

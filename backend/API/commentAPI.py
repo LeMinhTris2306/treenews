@@ -1,4 +1,4 @@
-from mongodb import mongodb
+from mongodb.mongodb import MongoDB
 from pymongo import ReturnDocument
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.responses import Response
@@ -7,8 +7,10 @@ from utils.utils import day_compare
 
 router = APIRouter()
 
-comment_collection = mongodb.create_connection('comments')
-article_collection = mongodb.create_connection('article')
+mongo = MongoDB("mongodb+srv://chebiche:admin@atlascluster.q8ewu8y.mongodb.net/", "treenews")
+
+comment_collection = mongo.get_collection('comments')
+article_collection = mongo.get_collection('article')
 
 @router.post(
     "/",

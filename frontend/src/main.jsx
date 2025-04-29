@@ -12,13 +12,13 @@ import store from "./store/store.jsx";
 import { UserProvider } from "./UserContext";
 
 createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <StrictMode>
-      <UserProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </UserProvider>
-    </StrictMode>
-  </Provider>
+    <Provider store={store}>
+        <StrictMode>
+            <UserProvider>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </UserProvider>
+        </StrictMode>
+    </Provider>
 );

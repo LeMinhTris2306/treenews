@@ -1,4 +1,5 @@
 from datetime import datetime
+from vietTTS import generate_audio
 
 def parse_date(input_string):
     # Danh sách các định dạng có thể
@@ -30,3 +31,7 @@ def day_compare(day1: str, day2: str):
     parsed_day2 = parse_date(day2)
 
     return parsed_day1 >= parsed_day2
+
+#Chỉnh sửa lexicon_file với đúng đường dẫn
+def create_record(text, output_path = None, sample_rate=16000, silence_duration=-1.0, lexicon_file=r"D:\Python\treenews\backend\vietTTS\assets\infore\lexicon.txt"):
+    return generate_audio.synthesize(text, output = output_path, sample_rate=sample_rate, silence_duration=silence_duration, lexicon_file=lexicon_file)

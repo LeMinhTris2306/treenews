@@ -26,6 +26,7 @@ class ArticleModel(BaseModel):
     displayName: str = Field(...)
     authorId: str = Field(...)
     categoryId: str = Field(...)
+    record: Optional[str] = None
     
     model_config = ConfigDict(
         populate_by_name=True,
@@ -59,7 +60,8 @@ class ArticleModel(BaseModel):
                 ],
                 "displayName": "cuoc-chien-chong-ma-tuy-khien-ong-duterte-bi-bat",
                 "authorId": "674869091328903d9b56a0a9",
-                "categoryId": "6748701d1328903d9b56a0bb"
+                "categoryId": "6748701d1328903d9b56a0bb",
+                "record": "file_record.wav"
             }
         },
     )

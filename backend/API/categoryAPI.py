@@ -1,11 +1,13 @@
-from mongodb import mongodb
+from mongodb.mongodb import MongoDB
 from pymongo import ReturnDocument
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.responses import Response
 from models.category import *
 
 router = APIRouter()
-cat_collection = mongodb.create_connection('categories')
+
+mongo = MongoDB("mongodb+srv://chebiche:admin@atlascluster.q8ewu8y.mongodb.net/", "treenews")
+cat_collection = mongo.get_collection('categories')
 
 @router.post(
     "/",

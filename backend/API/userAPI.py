@@ -1,4 +1,4 @@
-from mongodb import mongodb
+from mongodb.mongodb import MongoDB
 from pymongo import ReturnDocument
 from fastapi import APIRouter, Body, HTTPException, status, UploadFile, File
 from fastapi.responses import Response, FileResponse
@@ -6,7 +6,9 @@ import jwt, datetime, os, shutil
 from models.user import *
 
 router = APIRouter()
-user_collection = mongodb.create_connection('users')
+
+mongo = MongoDB("mongodb+srv://chebiche:admin@atlascluster.q8ewu8y.mongodb.net/", "treenews")
+user_collection = mongo.get_collection('users')
 
 server_storage_path = r"D:\Python\user_storage"
 
