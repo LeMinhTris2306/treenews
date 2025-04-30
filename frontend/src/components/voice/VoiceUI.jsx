@@ -2,17 +2,22 @@ import React, { useEffect, useState, useRef } from "react";
 import {
     getCurrentCommand,
     setSpeechText,
+    getSpeechText,
     clearSpeechText,
+    setPredictedText,
 } from "../../store/reducers/speechSlice";
 import { useSelector, useDispatch } from "react-redux";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
+import { useVoiceApi } from "../../utils/hooks/useVoiceApi";
 
 // component này sẽ xử lý và lưu giọng nói
 const VoiceUI = () => {
+    const { predictTranscript } = useVoiceApi();
     const dispatch = useDispatch();
     const currentCommand = useSelector(getCurrentCommand);
+    const currentSpeechText = useSelector(getSpeechText);
     const [listCommand, setListCommand] = useState([]);
     const [isRecording, setIsRecording] = useState(false);
     const [segments, setSegments] = useState([]);
@@ -67,6 +72,23 @@ const VoiceUI = () => {
         }
     }, [interimTranscript]);
 
+    useEffect(() => {
+        const predict = async (currentSpeechText, combinedStrings) => {
+            const response = await predictTranscript(
+                currentSpeechText,
+                combinedStrings
+            );
+            if (response && response != "") {
+                dispatch(setPredictedText(response.toLowerCase()));
+            }
+        };
+        if (currentSpeechText && currentSpeechText != "") {
+            const combinedStrings = currentCommand
+                .map((item) => item.commandList.join(", "))
+                .join(", ");
+            predict(currentSpeechText, combinedStrings);
+        }
+    }, [currentSpeechText]);
     //end recording session
     if (!browserSupportsSpeechRecognition) {
         return (
@@ -109,7 +131,7 @@ const VoiceUI = () => {
                             <div className="card-text">
                                 <p>
                                     {transcript == ""
-                                        ? "speak, fool"
+                                        ? "Say something cool"
                                         : transcript}
                                 </p>
                                 {/* <h4>📄 Các đoạn đã ghi:</h4>

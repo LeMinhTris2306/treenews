@@ -4,6 +4,6 @@ models/__pycache__
 utils/__pycache__
 .pytest_cache
 test.py
-assets/images/*z
+assets/images/*
 vietTTS
-API/API_KEY.env
+API/.env

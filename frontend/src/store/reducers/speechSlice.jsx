@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     commandList: [],
     speechText: "",
+    predictedText: "",
 };
 
 export const speechSlice = createSlice({
@@ -44,11 +45,18 @@ export const speechSlice = createSlice({
         clearSpeechText: (state) => {
             state.speechText = "";
         },
+        setPredictedText: (state, action) => {
+            state.predictedText = action.payload;
+        },
+        clearPredictedText: (state) => {
+            state.predictedText = "";
+        },
     },
 });
 
 export const getCurrentCommand = (state) => state.speech.commandList;
 export const getSpeechText = (state) => state.speech.speechText;
+export const getPredictedText = (state) => state.speech.predictedText;
 
 export const {
     setCommandList,
@@ -56,6 +64,8 @@ export const {
     clearCommand,
     setSpeechText,
     clearSpeechText,
+    setPredictedText,
+    clearPredictedText,
 } = speechSlice.actions;
 
 export default speechSlice.reducer;

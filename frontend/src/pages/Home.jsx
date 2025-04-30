@@ -42,7 +42,7 @@ const Home = () => {
         actions,
         componentName: "Trang chủ",
     });
-    useSpeechExecutor(actions);
+    useSpeechExecutor(actions, "Trang chủ");
     return (
         <>
             <div className="container-sm" id="home">
