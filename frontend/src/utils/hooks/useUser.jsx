@@ -20,16 +20,18 @@ export const useUser = () => {
     };
 
     const loginHandler = async (loginData) => {
-        const { payload: userId } = await dispatch(login(loginData));
-        console.log(userId);
-        if (userId) {
-            const { payload: user } = await dispatch(getUser(userId));
+        const { payload: result } = await dispatch(login(loginData));
+        console.log(result);
+        if (result && result.type == "success") {
+            const { payload: user } = await dispatch(getUser(result.userId));
             console.log(user);
             if (user) {
                 dispatch(setUser(user));
             }
             return true;
-        } else return false;
+        } else if (result && result.type == "danger") {
+            return result;
+        }
     };
 
     //Change password

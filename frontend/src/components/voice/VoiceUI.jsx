@@ -74,6 +74,7 @@ const VoiceUI = () => {
 
     useEffect(() => {
         const predict = async (currentSpeechText, combinedStrings) => {
+            console.log("predicting...");
             const response = await predictTranscript(
                 currentSpeechText,
                 combinedStrings
@@ -109,26 +110,42 @@ const VoiceUI = () => {
                 id="quick-voice-command"
             >
                 <div className="card my-2">
-                    <div className="card-body d-flex justify-content-around">
+                    <div className="card-body d-flex justify-content-center text-center">
                         <div className="d-flex flex-column">
                             <p>Microphone: {listening ? "on" : "off"}</p>
-                            <div className="d-flex flex-row">
-                                <button
-                                    className="btn"
-                                    id="speech-stop-button"
-                                    onClick={() => stop()}
-                                >
-                                    <i className="fa-solid fa-stop"></i>
-                                </button>
-                                <button
-                                    className="btn"
-                                    id="speech-start-button"
-                                    onClick={() => start()}
-                                >
-                                    <i className="fa-solid fa-play"></i>
-                                </button>
-                            </div>
-                            <div className="card-text">
+                            <button
+                                className="btn btn-outline-primary"
+                                onClick={() => {
+                                    listening ? stop() : start();
+                                }}
+                            >
+                                {listening ? (
+                                    <>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#1f1f1f"
+                                        >
+                                            <path d="M480-400q-50 0-85-35t-35-85v-240q0-50 35-85t85-35q50 0 85 35t35 85v240q0 50-35 85t-85 35Zm0-240Zm-40 520v-123q-104-14-172-93t-68-184h80q0 83 58.5 141.5T480-320q83 0 141.5-58.5T680-520h80q0 105-68 184t-172 93v123h-80Zm40-360q17 0 28.5-11.5T520-520v-240q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v240q0 17 11.5 28.5T480-480Z" />
+                                        </svg>
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#1f1f1f"
+                                        >
+                                            <path d="m710-362-58-58q14-23 21-48t7-52h80q0 44-13 83.5T710-362ZM480-594Zm112 112-72-72v-206q0-17-11.5-28.5T480-800q-17 0-28.5 11.5T440-760v126l-80-80v-46q0-50 35-85t85-35q50 0 85 35t35 85v240q0 11-2.5 20t-5.5 18ZM440-120v-123q-104-14-172-93t-68-184h80q0 83 57.5 141.5T480-320q34 0 64.5-10.5T600-360l57 57q-29 23-63.5 39T520-243v123h-80Zm352 64L56-792l56-56 736 736-56 56Z" />
+                                        </svg>
+                                    </>
+                                )}
+                            </button>
+                            <div className="card-text pt-2">
                                 <p>
                                     {transcript == ""
                                         ? "Say something cool"
@@ -144,12 +161,68 @@ const VoiceUI = () => {
                         </div>
                     </div>
                 </div>
-                <div className="card">
-                    <div className="card-body">
-                        <div className="card-text">
-                            {listCommand.map((commandGroup) => (
-                                <div key={commandGroup.name}>
-                                    <h5>{commandGroup.name}</h5>
+                <div>
+                    <button
+                        className="btn btn-primary"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasScrolling"
+                        aria-controls="offcanvasScrolling"
+                    >
+                        Xem các câu lệnh có sẵn
+                    </button>
+                </div>
+                <div
+                    className="offcanvas offcanvas-start"
+                    data-bs-scroll="true"
+                    data-bs-backdrop="true"
+                    tabIndex="-1"
+                    id="offcanvasScrolling"
+                    aria-labelledby="offcanvasScrollingLabel"
+                >
+                    <div className="offcanvas-header">
+                        {/* <h5
+                            className="offcanvas-title"
+                            id="offcanvasScrollingLabel"
+                        >
+                            Các câu lệnh có sẵn
+                        </h5> */}
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="offcanvas"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div className="offcanvas-body">
+                        {listCommand.map((commandGroup, index) => (
+                            <div key={commandGroup.name}>
+                                <button
+                                    className="btn"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target={`#collapse${index}`}
+                                    aria-expanded="false"
+                                    aria-controls={`collapse${index}`}
+                                >
+                                    <div className="d-flex">
+                                        <h5>{commandGroup.name}</h5>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#1f1f1f"
+                                        >
+                                            <path d="M480-360 280-560h400L480-360Z" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <div
+                                    className="collapse"
+                                    id={`collapse${index}`}
+                                >
                                     <ul>
                                         {commandGroup.commandList.map(
                                             (eachCommand, index) => (
@@ -169,8 +242,8 @@ const VoiceUI = () => {
                                         )}
                                     </ul>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

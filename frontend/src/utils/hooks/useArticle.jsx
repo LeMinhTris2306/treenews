@@ -10,7 +10,10 @@ export const useArticle = () => {
         const response = await articleApi.getListArticle(n, skip, args);
         return response;
     };
-
+    const getCategoryArticlesHandler = async (n) => {
+        const response = await articleApi.getCategoryArticles(n);
+        return response;
+    };
     const createArticleHanlder = async (data, files) => {
         console.log(data);
         const response = await articleApi.createArticle(data, files);
@@ -33,6 +36,7 @@ export const useArticle = () => {
     return {
         getArticle: getArticleHandler,
         getListArticle: getListArticleHandler,
+        getCategoryArticles: getCategoryArticlesHandler,
         createArticle: createArticleHanlder,
         updateArticle: updateArticleHandler,
         deleteArticle: deleteArticleHandler,

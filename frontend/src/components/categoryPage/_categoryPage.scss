@@ -1,25 +1,26 @@
 #category-page {
-  .hero-card {
-    max-width: 930px;
-    img {
-      max-height: 550px;
+    .hero-card {
+        max-width: 930px;
+        img {
+            max-height: 550px;
+        }
     }
-  }
-  hr {
-    max-width: 930px;
-  }
-  #CPList {
-    .card {
-      max-width: 930px;
+    hr {
+        max-width: 930px;
     }
-    .card-img-top {
-      width: 220px;
-      border-radius: 5px 0px 0px 5px;
-      max-height: 150px;
+    #CPList {
+        .card {
+            max-width: 930px;
+        }
+        .card-img-top {
+            min-width: 220px;
+            width: 220px;
+            border-radius: 5px 0px 0px 5px;
+            max-height: 150px;
+        }
+        .text-truncate-container {
+            -webkit-line-clamp: 4; /* Cắt sau 2 dòng */
+            line-clamp: 4;
+        }
     }
-    .text-truncate-container {
-      -webkit-line-clamp: 4; /* Cắt sau 2 dòng */
-      line-clamp: 4;
-    }
-  }
 }

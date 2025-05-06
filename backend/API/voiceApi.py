@@ -18,5 +18,5 @@ async def predict(transcript: str = Body(...), commands: str = Body(...)):
         model="gemini-2.0-flash-lite-001",
         contents=contents,
     )
-
+    print(response.text)
     return response.text

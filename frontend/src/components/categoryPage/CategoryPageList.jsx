@@ -46,7 +46,6 @@ const CategoryPageList = (props) => {
     const handleLoadMoreNews = async (categoryId) => {
         try {
             const listNews = await fetchNews(6, index * 6, categoryId);
-            console.log(listNews);
             if (listNews && listNews.length > 0) {
                 setListNews(listNews);
                 setIndex(index + 1);
@@ -115,7 +114,7 @@ const CategoryPageList = (props) => {
                         <div className="d-flex flex-column">
                             <Link
                                 className="card d-flex flex-column hero-card border-0 link-underline link-underline-opacity-0"
-                                to={`/`} // fix
+                                to={`/article/${listNews[0].id}`} // fix
                             >
                                 <img
                                     src={

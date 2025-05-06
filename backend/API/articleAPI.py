@@ -123,6 +123,56 @@ async def get_list_articles(n: int, skip: int):
     articles = article_collection.find().sort('uploadDay', -1).skip(skip=skip).to_list(n)
     return ArticleCollection(articles=articles)
 
+@router.get("/category", response_description="get a list number of articles with specific category")
+async def get_list_articles_of_all_categories(n: int):
+    pipeline = [
+        {
+            "$sort": {"_id": -1}  # Sắp xếp theo ngày (có thể cần chuyển về định dạng ngày nếu đang là chuỗi)
+        },
+        {
+            "$group": {
+                "_id": "$categoryId",
+                "articles": {"$push": "$$ROOT"}
+            }
+        },
+        {
+            "$project": {
+                "categoryId": "$_id",
+                "articles": {"$slice": ["$articles", n]},  # Sử dụng n là số nguyên
+                "_id": 0
+            }
+        },
+        {
+            "$sort": {"categoryId": -1}  # Nếu muốn random thì xoá dòng này
+        },
+        {
+            "$addFields": {
+                "categoryId": { "$toObjectId": "$categoryId" }
+            }
+        },
+        {
+            "$lookup": {
+                "from": "categories",
+                "localField": "categoryId",
+                "foreignField": "_id",
+                "as": "category"
+            }
+        },
+    ]
+    results = list(article_collection.aggregate(pipeline))
+    def convert_objectid(doc):
+        if isinstance(doc, list):
+            return [convert_objectid(d) for d in doc]
+        elif isinstance(doc, dict):
+            return {k: convert_objectid(v) for k, v in doc.items()}
+        elif str(type(doc)).endswith("ObjectId'>"):
+            return str(doc)
+        else:
+            return doc
+
+    cleaned_result = convert_objectid(results)
+    return cleaned_result
+
 @router.get("/category/{categoryid}", response_description="get a list number of articles with specific category",
     response_model=ArticleCollection,
     response_model_by_alias=False,)

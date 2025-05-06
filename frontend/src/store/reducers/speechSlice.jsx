@@ -40,6 +40,9 @@ export const speechSlice = createSlice({
             );
         },
         setSpeechText: (state, action) => {
+            if (state.predictedText === action.payload) {
+                state.predictedText = ""; // Reset trước để tạo trigger
+            }
             state.speechText = action.payload;
         },
         clearSpeechText: (state) => {

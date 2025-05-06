@@ -22,6 +22,16 @@ const getListArticle = async (n, skip, args = null) => {
     }
 };
 
+const getCategoryArticles = async (n) => {
+    const url = `${API_URL}category?n=${n}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const createArticle = async (articleDetail, files) => {
     try {
         const formData = new FormData();
@@ -99,6 +109,7 @@ const createRecord = async (id) => {
 export default {
     getArticle,
     getListArticle,
+    getCategoryArticles,
     createArticle,
     updateArticle,
     deleteArticle,

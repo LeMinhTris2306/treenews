@@ -1,8 +1,12 @@
 #quick-voice-command {
-    padding-top: 5%;
+    padding-top: 10%;
     .card {
         .card-body {
             max-width: 290px;
         }
+    }
+    .offcanvas {
+        max-width: 300px;
+        transition: transform 0.25s ease-in-out, opacity 0.5s ease-in-out;
     }
 }

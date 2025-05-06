@@ -14,6 +14,7 @@ import Article from "./pages/Article";
 import CreateArticle from "./pages/CreateArticle";
 import EditArticle from "./pages/EditArticle";
 import VoiceUI from "./components/voice/VoiceUI";
+import Alert from "./components/alert/Alert";
 
 import ProtectedRoute from "./protectedRoute";
 import { UserContext } from "./UserContext";
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/article/:articleid" element={<Article />} />
             </Routes>
             <Footer />
+            <Alert />
             {location.pathname != "/login" &&
                 location.pathname != "/register" && <VoiceUI />}
         </>
