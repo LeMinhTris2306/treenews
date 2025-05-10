@@ -49,7 +49,6 @@ export const useUser = () => {
 
     const loadUserHandler = async () => {
         const token = localStorage.getItem("user");
-        console.log(token);
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);

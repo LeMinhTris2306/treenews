@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+    frontend:
+        build:
+            context: ./frontend
+        ports:
+            - "5173:5173" # Ánh xạ cổng 5173 của container vào cổng 5173 trên máy chủ
+        volumes:
+            - ./frontend:/app # Ánh xạ mã nguồn để hỗ trợ hot reload
+        environment:
+            - VITE_BACKEND_URL=http://backend:80 # Ví dụ về biến môi trường cho backend
+
+    backend:
+        build:
+            context: ./backend # Chỉ định thư mục backend/
+        ports:
+            - "8000:8000" # Ánh xạ cổng 80 của container vào cổng 80 trên máy chủ
+        volumes:
+            - ./backend:/app
+        environment:
+            - BACKEND_URL=http://backend:8000 # Cấu hình các biến môi trường cho backend

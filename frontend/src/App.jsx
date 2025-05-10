@@ -16,7 +16,7 @@ import EditArticle from "./pages/EditArticle";
 import VoiceUI from "./components/voice/VoiceUI";
 import Alert from "./components/alert/Alert";
 
-import ProtectedRoute from "./protectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import { UserContext } from "./UserContext";
 import Dictaphone from "./voice/useSpeechRecognition";
 

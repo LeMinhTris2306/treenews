@@ -7,7 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useArticle } from "../utils/hooks/useArticle";
 import ArticleTextarea from "../components/createArticle/ArticleTextarea";
 import ArticleImage from "../components/createArticle/ArticleImage";
-import CategoryOption from "../components/createArticle/categoryOption";
+import CategoryOption from "../components/createArticle/CategoryOption";
 
 const EditArticle = () => {
     const { articleId } = useParams();

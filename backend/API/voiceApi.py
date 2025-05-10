@@ -1,13 +1,11 @@
 from fastapi import APIRouter, Body, HTTPException, status
 from fastapi.responses import Response
 import os
-from dotenv import load_dotenv
+from API.API_KEY import API_KEY
 from google import genai
 
 router = APIRouter()
-load_dotenv(r"D:\Python\treenews\backend\API\.env")
-api_key = os.getenv("API_KEY")
-client = genai.Client(api_key=api_key)
+client = genai.Client(api_key=API_KEY)
 # print(f"My API key is: {api_key}")
 
 @router.post("/predict")

@@ -44,6 +44,7 @@ const CategoryPageList = (props) => {
     };
 
     const handleLoadMoreNews = async (categoryId) => {
+        window.scrollTo(0, 0);
         try {
             const listNews = await fetchNews(6, index * 6, categoryId);
             if (listNews && listNews.length > 0) {
@@ -57,6 +58,7 @@ const CategoryPageList = (props) => {
         }
     };
     const handleLoadFormerNews = async (categoryId) => {
+        window.scrollTo(0, 0);
         try {
             if (index > 1) {
                 console.log(index);

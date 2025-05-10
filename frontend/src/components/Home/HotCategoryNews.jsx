@@ -36,7 +36,6 @@ const HotCategoryNews = () => {
                 listactions = [...listactions, ...tempListactions];
             });
             setActions(listactions);
-            console.log(listactions);
         }
     }, [listCategoryNews]);
     useVoiceCommands({

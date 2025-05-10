@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import ArticleTextarea from "../components/createArticle/ArticleTextarea";
 import ArticleImage from "../components/createArticle/ArticleImage";
-import CategoryOption from "../components/createArticle/categoryOption";
+import CategoryOption from "../components/createArticle/CategoryOption";
 
 const CreateArticle = () => {
     const navigate = useNavigate();

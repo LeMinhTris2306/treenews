@@ -3,10 +3,11 @@ from pymongo import ReturnDocument
 from fastapi import APIRouter, Body, HTTPException, status, UploadFile, File
 from fastapi.responses import Response, FileResponse
 from models.article import *
-from utils.utils import create_record
 from datetime import datetime
 import hashlib
 import os, shutil
+
+from utils.config import server_storage_path, img_url_path, audio_url_path
 
 router = APIRouter()
 
@@ -17,9 +18,9 @@ user_collection = mongo.get_collection('user')
 article_collection = mongo.get_collection('article')
 comment_collection = mongo.get_collection('comments')
 
-server_storage_path = r"D:\Python\server_storage"
-img_url_path = "http://localhost:8000/article/getimage/" #idtacgia/idbaibao/img.jpg, frontend sẽ dùng cái này để fetch hình ảnh
-audio_url_path = "http://localhost:8000/article/record/"
+# server_storage_path = r"D:\Python\server_storage"
+# img_url_path = "http://localhost:8000/article/getimage/" #idtacgia/idbaibao/img.jpg, frontend sẽ dùng cái này để fetch hình ảnh
+# audio_url_path = "http://localhost:8000/article/record/"
 
 class ResponseModel(BaseModel):
     Article: ArticleModel = Field(...)
@@ -306,35 +307,35 @@ async def get_article_image(filename: str):
         return FileResponse(file_path)
     raise HTTPException(status_code=404, detail="Image not found")
 
-@router.post("/addRecord/{article_id}")
-async def add_record(article_id: str):
-    article = article_collection.find_one({"_id": ObjectId(article_id)})
-    script = ""
-    if article:
-        article_detail = article['details']
-        for detail in article_detail:
-            if detail['type'] == "text":
-                text = " ".join(detail['detail'])
-                script = script + text + " "
-    else:
-        raise HTTPException(status_code=404, detail="article {id} not found")
+# @router.post("/addRecord/{article_id}")
+# async def add_record(article_id: str):
+#     article = article_collection.find_one({"_id": ObjectId(article_id)})
+#     script = ""
+#     if article:
+#         article_detail = article['details']
+#         for detail in article_detail:
+#             if detail['type'] == "text":
+#                 text = " ".join(detail['detail'])
+#                 script = script + text + " "
+#     else:
+#         raise HTTPException(status_code=404, detail="article {id} not found")
 
-    try:
-        output_dir = os.path.join(server_storage_path, "audio")
-        os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, f"{article_id}.wav")
-        create_record(text=script, output_path=output_path)
-        article['record'] = f"{audio_url_path}{article_id}.wav"
-        update_result = article_collection.find_one_and_update(
-            {"_id": ObjectId(article_id)},
-            {"$set": article},
-            return_document=ReturnDocument.AFTER,
-        )
-        if update_result is not None:
-            return article_id
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=400, detail=f"An error has occured, {e}")
+#     try:
+#         output_dir = os.path.join(server_storage_path, "audio")
+#         os.makedirs(output_dir, exist_ok=True)
+#         output_path = os.path.join(output_dir, f"{article_id}.wav")
+#         create_record(text=script, output_path=output_path)
+#         article['record'] = f"{audio_url_path}{article_id}.wav"
+#         update_result = article_collection.find_one_and_update(
+#             {"_id": ObjectId(article_id)},
+#             {"$set": article},
+#             return_document=ReturnDocument.AFTER,
+#         )
+#         if update_result is not None:
+#             return article_id
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=400, detail=f"An error has occured, {e}")
 
 @router.get("/record/{filename}")
 async def get_record(filename: str):
