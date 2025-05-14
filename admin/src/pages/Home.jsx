@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAdmin } from "../utils/hook/useAdmin";
-
+import { Link } from "react-router-dom";
 const Home = () => {
     const { getDashboardInfo } = useAdmin();
     const [dashboardInfo, setDashboardInfo] = useState(null);
@@ -47,7 +47,9 @@ const Home = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="card-footer">Xem</div>
+                                    <div className="card-footer">
+                                        <Link to={`/articles`}>Xem thêm</Link>
+                                    </div>
                                 </div>
                                 <div className="card">
                                     <div className="card-body row ">
@@ -67,7 +69,9 @@ const Home = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="card-footer">Xem</div>
+                                    <div className="card-footer">
+                                        <Link to={`/users`}>Xem thêm</Link>
+                                    </div>
                                 </div>
                                 <div className="card">
                                     <div className="card-body row ">

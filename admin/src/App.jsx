@@ -15,6 +15,7 @@ import AdminDetail from "./pages/AdminDetail";
 import ArticlesPage from "./pages/ArticlesPage";
 import ArticleInfo from "./pages/ArticleInfo";
 import EditArticle from "./pages/EditArticle";
+import CreateArticle from "./pages/CreateArticles";
 import Header from "./components/layout/Header";
 import Alert from "./components/alert/Alert";
 
@@ -64,6 +65,7 @@ function App() {
                         element={<ArticleInfo />}
                     />
                     <Route path="/edit/:articleId" element={<EditArticle />} />
+                    <Route path="/createarticle" element={<CreateArticle />} />
                 </Route>
             </Routes>
             <Alert />

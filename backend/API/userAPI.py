@@ -4,13 +4,15 @@ from fastapi import APIRouter, Body, HTTPException, status, UploadFile, File
 from fastapi.responses import Response, FileResponse
 import jwt, datetime, os, shutil
 from models.user import *
+# from utils.config import server_storage_path
 
 router = APIRouter()
 
 mongo = MongoDB("mongodb+srv://chebiche:admin@atlascluster.q8ewu8y.mongodb.net/", "treenews")
 user_collection = mongo.get_collection('users')
+article_collection = mongo.get_collection('article')
 
-server_storage_path = r"D:\Python\user_storage"
+server_storage_path = r"D:\Python\server_storage"
 
 class ChangePasswordModel(BaseModel):
     old_password: str = Field(...)
@@ -92,17 +94,29 @@ async def update_user(id: str, user: UpdateUserModel = Body(...)):
         else:
             raise HTTPException(status_code=404, detail=f"User {id} not found")
         
-@router.delete("/{id}", response_description="Delete a student")
-async def delete_student(id: str):
+@router.delete("/{id}", response_description="Delete a user")
+async def delete_user(id: str):
     """
-    Remove a single user record from the database.
+        Remove a single user record from the database and his articles.
     """
+    try:
+        article_collection.delete_many({"authorId": id})
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400, detail=f"An error has while deleting news")
+
     delete_result = user_collection.delete_one({"_id": ObjectId(id)})
 
     if delete_result.deleted_count == 1:
+        #cleaning up server storage
+        try:
+            shutil.rmtree(os.path.join(server_storage_path, id))
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=400, detail=f"An error has occured")
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")
+    raise HTTPException(status_code=404, detail=f"User {id} not found")
 
 @router.post(
     "/login",

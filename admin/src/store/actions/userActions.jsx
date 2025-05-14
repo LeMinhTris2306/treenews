@@ -45,3 +45,13 @@ export const changeAvatar = createAsyncThunk(
         return result;
     }
 );
+
+export const register = createAsyncThunk("user/register", async (regData) => {
+    const result = await userApi.createUser(regData);
+    return result;
+});
+
+export const deleteUser = createAsyncThunk("user/delete", async (userId) => {
+    const result = await userApi.deleteUser(userId);
+    return result;
+});

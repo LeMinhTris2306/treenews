@@ -46,8 +46,7 @@ const getUsers = async (n) => {
 const createUser = async (regData) => {
     try {
         delete regData.confirmPassword;
-        regData.userType = "Reader";
-        regData.phoneNumber = "";
+        regData.userType = "Reader"; //default, will change later
         regData.birthday = "01/01/2003";
         const response = await axios.post(`${USER_API_URL}`, regData);
         return { message: "Đăng ký thành công", type: "success" };
@@ -116,6 +115,17 @@ const changeAvatar = async (img, id) => {
     }
 };
 
+const deleteUser = async (userId) => {
+    try {
+        const response = await axios.delete(`${USER_API_URL}${userId}`);
+        console.log(response);
+        return { message: "Xóa người dùng thành công", type: "success" };
+    } catch (error) {
+        console.log(error);
+        return { message: "có lỗi đã xảy ra", type: "danger" };
+    }
+};
+
 const getDashboardInfo = async () => {
     try {
         const response = await axios.get(`${ADMIN_API_URL}dashboard`);
@@ -131,6 +141,7 @@ export default {
     getUsers,
     createUser,
     updateUser,
+    deleteUser,
     changePasswrod,
     changeAvatar,
     getDashboardInfo,

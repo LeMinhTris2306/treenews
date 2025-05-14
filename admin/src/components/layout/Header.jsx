@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 const Header = () => {
     return (
-        <div className="container-lg" id="navigation-bar">
+        <div className="container bg-body-tertiary " id="navigation-bar">
             <nav className="navbar navbar-expand-lg bg-success-subtle">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">

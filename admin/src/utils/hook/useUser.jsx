@@ -6,6 +6,8 @@ import {
     changeAvatar,
     getUsers,
     updateUser,
+    register,
+    deleteUser,
 } from "../../store/actions/userActions";
 import { setUser, logout } from "../../store/reducers/userSlice";
 import { jwtDecode } from "jwt-decode";
@@ -98,14 +100,27 @@ export const useUser = () => {
         }
     };
 
+    //Register
+    const registerHandler = async (regData) => {
+        const { payload: result } = await dispatch(register(regData));
+        return result;
+    };
+
+    const deleteUserHandler = async (userId) => {
+        const { payload: result } = await dispatch(deleteUser(userId));
+        return result;
+    };
+
     return {
         login: loginHandler,
         logout: logoutHanler,
         getUser: getUserHandler,
         getUsers: getUsersHandler,
         loadUser: loadUserHandler,
+        createUser: registerHandler,
         changePassword: changePasswordHandler,
         updateUser: updateUserHandler,
+        deleteUser: deleteUserHandler,
         changeAvatar: changeAvatarHandler,
     };
 };
