@@ -217,10 +217,6 @@ const EditArticle = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        {/* <div className="my-2">
-                    <p className="mb-2">Mô tả</p>
-                    <ArticleTextarea {...register("description")} value={news.description}/>
-                  </div> */}
                                     </div>
                                     <div
                                         className="py-2"
@@ -324,7 +320,7 @@ const EditArticle = () => {
                                             >
                                                 Thêm ảnh
                                             </button>
-                                            <button
+                                            {/* <button
                                                 type="button"
                                                 className="btn btn-primary mx-2"
                                                 onClick={() => {
@@ -332,7 +328,7 @@ const EditArticle = () => {
                                                 }}
                                             >
                                                 Tạo tự động đọc báo
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <div>
                                             <button

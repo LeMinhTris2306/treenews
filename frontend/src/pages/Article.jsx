@@ -5,13 +5,8 @@ import { useArticle } from "../utils/hooks/useArticle";
 import ArticleDetail from "../components/article/ArticleDetail";
 import RecommendArticle from "../components/article/RecommendArticle";
 
-import { useVoiceCommands } from "../utils/hooks/useVoiceCommand";
-import { useSpeechExecutor } from "../utils/hooks/useSpeechExecutor";
-
 const Article = () => {
     const { articleid } = useParams();
-    const [subActions, setSubActions] = useState([]);
-    const [uniqueSubActions, setUniqueSubActions] = useState([]);
     const { getArticle } = useArticle();
     const [article, setArticle] = useState(null);
 
@@ -57,17 +52,13 @@ const Article = () => {
             <div className="container-sm" id="article-main">
                 {article ? (
                     <>
-                        <ArticleDetail
-                            article={article}
-                            setSubActions={setSubActions}
-                        />
+                        <ArticleDetail article={article} />
                         <div className="my-4">
                             <h3>Các bài báo liên quan</h3>
                         </div>
                         <RecommendArticle
                             categoryId={article.categoryId}
                             title={article.title}
-                            setSubActions={setSubActions}
                         />
                     </>
                 ) : (

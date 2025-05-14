@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useArticle } from "../../utils/hooks/useArticle";
 import { Link, useNavigate } from "react-router-dom";
+import { useAlert } from "../../utils/hooks/useAlert";
 
 const ListCreatedArticles = (props) => {
     const renderPagination = (noPage) => {
@@ -61,6 +62,7 @@ const ListCreatedArticles = (props) => {
     const [keyword, setKeyword] = useState("");
     const [noPage, setNoPage] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
+    const alert = useAlert();
 
     const fetchListNews = async () => {
         try {
@@ -94,8 +96,14 @@ const ListCreatedArticles = (props) => {
         const result = confirm("Xác nhận xóa bài báo?");
         if (result) {
             try {
-                await deleteArticle(id);
-                alert("Bài báo được xóa thành công");
+                const response = await deleteArticle(id);
+                if (response.type === "success") {
+                    alert.success(response.message);
+                } else if (response.type === "danger") {
+                    alert.danger(response.message);
+                } else {
+                    alert.warning("Có lỗi đã xảy ra, vui lòng thử lại sau");
+                }
                 fetchListNews();
             } catch (error) {
                 console.log(error);

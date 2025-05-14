@@ -86,12 +86,11 @@ const updateArticle = async (data, files, id) => {
 const deleteArticle = async (id) => {
     try {
         const response = await axios.delete(`${API_URL}${id}`);
-        console.log(response.status);
-        return response.status;
+        return { message: "Xoá bài báo thành công", type: "success" };
     } catch (error) {
         if (error.response && error.response.status === 404) {
-            return { error: "Không tìm thấy bài báo" };
-        } else return { error: "Có lỗi đã xảy ra" };
+            return { message: "Không tìm thấy bài báo", type: "danger" };
+        } else return { message: "Có lỗi đã xảy ra", type: "danger" };
     }
 };
 

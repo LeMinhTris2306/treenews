@@ -1,14 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-initState = {
+const initialState = {
     currentUser: null,
     token: localStorage.getItem("user") || "",
 };
 
 export const userSlice = createSlice({
     name: "user",
-    initState,
-    reducer: {
+    initialState,
+    reducers: {
         logout: (state) => {
             localStorage.removeItem("user");
             state.currentUser = null;
@@ -19,11 +19,9 @@ export const userSlice = createSlice({
     },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout, setUser } = userSlice.actions; // Export both action creators here
 
 export const selectToken = (state) => state.user.token;
 export const selectCurrentUser = (state) => state.user.currentUser;
-
-export const { setUser } = userSlice.actions;
 
 export default userSlice.reducer;

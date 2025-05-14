@@ -1,0 +1,21 @@
+.form-control {
+    display: block;
+}
+
+#profile-avatar-section {
+    max-width: 440px;
+    #profile-avatar {
+        width: 250px;
+    }
+}
+
+.sub-article {
+    .card-img-top {
+        // min-height: 166px;
+        height: 175px;
+    }
+    .card-text {
+        height: 75px;
+        color: black;
+    }
+}

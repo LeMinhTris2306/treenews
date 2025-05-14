@@ -1,49 +1,49 @@
 #home {
-  .hoveractive :hover {
-    color: rgb(0, 85, 114);
-    transition: color 0.2s;
-  }
-  #top-article {
-    max-width: 950px;
-    .card {
-      height: 446px;
+    .hoveractive :hover {
+        color: rgb(0, 85, 114);
+        transition: color 0.2s;
     }
-    .card-img-top {
-      height: 340px;
+    #top-article {
+        max-width: 950px;
+        .card {
+            height: 446px;
+        }
+        .card-img-top {
+            height: 340px;
+        }
     }
-  }
-  .side-content {
-    height: 138px;
-    .card-img-top {
-      width: 210px;
-      height: 125px;
-      min-width: 198px;
-      min-height: 125px;
+    .side-content {
+        height: 138px;
+        .card-img-top {
+            width: 210px;
+            height: 125px;
+            min-width: 198px;
+            min-height: 125px;
+        }
     }
-  }
-  .text-truncate-container {
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Cắt sau 2 dòng */
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  #home {
-    margin: auto;
-    max-width: 1120px;
-    .card {
-      border: 0px;
+    .text-truncate-container {
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Cắt sau 2 dòng */
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
-  }
+    #home {
+        margin: auto;
+        max-width: 1120px;
+        .card {
+            border: 0px;
+        }
+    }
 }
 
 .sub-article {
-  .card-img-top {
-    // min-height: 166px;
-    height: 175px;
-  }
-  .card-text {
-    height: 75px;
-    color: black;
-  }
+    .card-img-top {
+        // min-height: 166px;
+        height: 175px;
+    }
+    .card-text {
+        height: 75px;
+        color: black;
+    }
 }

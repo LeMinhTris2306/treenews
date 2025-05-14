@@ -6,7 +6,7 @@ import { useSpeechExecutor } from "../../utils/hooks/useSpeechExecutor";
 
 const RecommendArticle = (props) => {
     const navigate = useNavigate();
-    const { categoryId, title, setSubActions } = props;
+    const { categoryId, title } = props;
     const [listNews, setListNews] = useState([]);
     const [actions, setActions] = useState([]);
     const [loading, setLoading] = useState(false);

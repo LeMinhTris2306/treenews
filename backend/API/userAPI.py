@@ -44,8 +44,8 @@ async def create_user(user: UserModel = Body(...)):
     response_model=UserCollection,
     response_model_by_alias=False,
 )
-async def get_list_users():
-    users = user_collection.find().to_list(100)
+async def get_list_users(n: Optional[int] = 100):
+    users = user_collection.find().to_list(n)
     return UserCollection(users=users)
 
 @router.get(
@@ -159,7 +159,13 @@ async def updateImage(id: str, image: UploadFile = File(description="Thông tin 
     if user is None:
         raise HTTPException(status_code=404, detail=f"User {id} not found")
     
-    old_img_path = os.path.join(server_storage_path, user['imgUrl'].split("/")[-1].replace("%5C", "/"))
+    if user['imgUrl']:
+        old_img_path = os.path.join(server_storage_path, user['imgUrl'].split("/")[-1].replace("%5C", "/"))
+        try:
+            if os.path.exists(old_img_path):
+                os.remove(old_img_path)
+        except:
+            pass
 
     user_assets_path = os.path.join(server_storage_path, id)
     os.makedirs(user_assets_path, exist_ok=True)
@@ -174,11 +180,7 @@ async def updateImage(id: str, image: UploadFile = File(description="Thông tin 
         raise HTTPException(status_code=400, detail=f"Có lỗi khi upload ảnh, lỗi: {e}")
     
     #Xóa ảnh cũ
-    try:
-        if os.path.exists(old_img_path):
-            os.remove(old_img_path)
-    except:
-        pass
+    
     
     image_url = f"http://localhost:8000/user/getavatar/{id}%5C{image.filename}"
     print(image_url)

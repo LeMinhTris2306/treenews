@@ -1,0 +1,43 @@
+.move-to-top {
+    width: 30px;
+    height: 30px;
+}
+
+#article-main {
+    max-width: 930px;
+    hr {
+        max-width: 930px;
+    }
+    .card {
+        max-width: 930px;
+    }
+    #article-author {
+        font-size: 0.875em;
+        color: #6c757d;
+    }
+    .card-body {
+        p {
+            font-size: 1.1em;
+        }
+        .image-detail {
+            max-width: 900px;
+            img {
+                max-height: 600px;
+            }
+        }
+    }
+}
+#recommend {
+    .card {
+        max-width: 930px;
+    }
+    .card-img-top {
+        width: 220px;
+        max-height: 150px;
+        border-radius: 5px 0px 0px 5px;
+    }
+    .text-truncate-container {
+        -webkit-line-clamp: 4; /* Cắt sau 2 dòng */
+        line-clamp: 4;
+    }
+}

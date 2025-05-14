@@ -34,6 +34,7 @@ app.include_router(category_router, prefix="/category", tags=["categories"])
 app.include_router(article_router, prefix="/article", tags=["articles"])
 app.include_router(comment_router, prefix="/comment", tags=["comments"])
 app.include_router(voice_router, prefix="/command", tags=["voice"])
+app.include_router(admin, prefix="/admin", tags=['admin'])
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
 

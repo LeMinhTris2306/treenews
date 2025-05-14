@@ -18,7 +18,6 @@ import Alert from "./components/alert/Alert";
 
 import ProtectedRoute from "./ProtectedRoute";
 import { UserContext } from "./UserContext";
-import Dictaphone from "./voice/useSpeechRecognition";
 
 function App() {
     const location = useLocation();
@@ -30,7 +29,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<Dictaphone />} />
+                <Route path="/register" element={<RegisterPage />} />
                 <Route
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated} />

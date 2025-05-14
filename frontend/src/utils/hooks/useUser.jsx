@@ -21,7 +21,6 @@ export const useUser = () => {
 
     const loginHandler = async (loginData) => {
         const { payload: result } = await dispatch(login(loginData));
-        console.log(result);
         if (result && result.type == "success") {
             const { payload: user } = await dispatch(getUser(result.userId));
             console.log(user);

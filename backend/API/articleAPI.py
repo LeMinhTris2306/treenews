@@ -22,6 +22,17 @@ comment_collection = mongo.get_collection('comments')
 # img_url_path = "http://localhost:8000/article/getimage/" #idtacgia/idbaibao/img.jpg, frontend sẽ dùng cái này để fetch hình ảnh
 # audio_url_path = "http://localhost:8000/article/record/"
 
+#for pipeline search
+def convert_objectid(doc):
+    if isinstance(doc, list):
+        return [convert_objectid(d) for d in doc]
+    elif isinstance(doc, dict):
+        return {k: convert_objectid(v) for k, v in doc.items()}
+    elif isinstance(doc, ObjectId):
+        return str(doc)
+    else:
+        return doc
+
 class ResponseModel(BaseModel):
     Article: ArticleModel = Field(...)
     Filenames: Optional[List[str]] = Field(None)
@@ -112,17 +123,70 @@ async def create_article(article: ArticleModel = Body(...), files: List[UploadFi
             raise HTTPException(status_code=500, detail=f"Có lỗi khi upload ảnh, lỗi: {e}")
 
 @router.get(
-    "/",
+    "/listarticleinfo",
     response_description="get a list number of articles",
-    response_model=ArticleCollection,
     response_model_by_alias=False,
 )
 async def get_list_articles(n: int, skip: int):
     """
-    Tìm n số bài báo
+    Tìm n số bài báo, default sẽ lấy 20 bài
     """
-    articles = article_collection.find().sort('uploadDay', -1).skip(skip=skip).to_list(n)
-    return ArticleCollection(articles=articles)
+
+    pipeline = [
+        {
+            "$sort": {"_id": -1}  # Sắp xếp theo ngày (có thể cần chuyển về định dạng ngày nếu đang là chuỗi)
+        },
+        {
+            "$addFields": {
+                "authorObjectId": {
+                    "$toObjectId": "$authorId"
+                },
+                "categoryObjectId": {
+                    "$toObjectId": "$categoryId"
+                }
+            }
+        },
+        {
+            "$lookup": {
+                "from": "users",
+                "localField": "authorObjectId",
+                "foreignField": "_id",
+                "as": "author_info"
+            }
+        },
+        {
+            "$lookup": {
+                "from": "categories",
+                "localField": "categoryObjectId",
+                "foreignField": "_id",
+                "as": "category_info"
+            }
+        },
+        {
+            "$unwind": "$author_info"
+        },
+        {
+            "$unwind": "$category_info"
+        },
+        {
+            "$project": {
+                "title": 1,
+                "uploadDay": 1,
+                "categoryName": "$category_info.categoryName",
+                "authorName": {
+                    "$concat": ["$author_info.lastName", " ", "$author_info.firstName"]
+                }
+            }
+        },
+        {"$skip": skip},
+        
+    ]
+    if n > 0:
+        pipeline.append({"$limit": n})
+
+    results = list(article_collection.aggregate(pipeline))
+    
+    return convert_objectid(results)
 
 @router.get("/category", response_description="get a list number of articles with specific category")
 async def get_list_articles_of_all_categories(n: int):
@@ -161,16 +225,6 @@ async def get_list_articles_of_all_categories(n: int):
         },
     ]
     results = list(article_collection.aggregate(pipeline))
-    def convert_objectid(doc):
-        if isinstance(doc, list):
-            return [convert_objectid(d) for d in doc]
-        elif isinstance(doc, dict):
-            return {k: convert_objectid(v) for k, v in doc.items()}
-        elif str(type(doc)).endswith("ObjectId'>"):
-            return str(doc)
-        else:
-            return doc
-
     cleaned_result = convert_objectid(results)
     return cleaned_result
 
@@ -281,9 +335,13 @@ async def delete_article(id: str):
         try:
             imgPath = []
             #Xử lý xoá file record
-            if article['record'] is not None:
+            record = article.get('record')
+            if record is not None:
                 record_name = str(article['record']).split("/")[-1]
-                os.remove(os.path.join(server_storage_path, "audio", record_name))
+                try:
+                    os.remove(os.path.join(server_storage_path, "audio", record_name))
+                except:
+                    print("find nothing")
             
             for item in article['details']:
                 if item['type'] == 'image':
@@ -293,7 +351,7 @@ async def delete_article(id: str):
             article_collection.delete_one({"_id": ObjectId(id)})
             comment_collection.delete_many({"articleId": id})
         except Exception as e:
-            print(e)
+            print("error: ",e)
             raise HTTPException(status_code=400, detail=f"An error has occured, {e}")
         return Response(status_code=status.HTTP_204_NO_CONTENT)        
 
