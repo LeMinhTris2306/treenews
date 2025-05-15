@@ -23,7 +23,6 @@ const HotCategoryNews = () => {
 
     useEffect(() => {
         if (listCategoryNews && listCategoryNews != []) {
-            console.log(listCategoryNews);
             let listactions = [];
             listCategoryNews.map((categoryNews, index) => {
                 const categoryName = categoryNews.category[0].categoryName;

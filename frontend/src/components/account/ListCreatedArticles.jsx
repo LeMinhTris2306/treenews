@@ -90,6 +90,7 @@ const ListCreatedArticles = (props) => {
             article.title.toLowerCase().includes(keyword.toLowerCase())
         );
         setDisplayNews(result);
+        setCurrentPage(0);
     };
 
     const handleDelete = async (id) => {

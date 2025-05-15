@@ -124,7 +124,9 @@ const CreateArticle = () => {
                                             type="text"
                                             className="form-control"
                                             placeholder="Tiêu đề bài báo"
-                                            {...register("title")}
+                                            {...register("title", {
+                                                required: "Không được bỏ trống",
+                                            })}
                                         />
                                         {errors.title && (
                                             <div

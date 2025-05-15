@@ -21,6 +21,11 @@ const Header = () => {
                                     Quản lí Người dùng
                                 </Link>
                             </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/categories">
+                                    Quản lí thể loại
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <div className="dropdown-center">

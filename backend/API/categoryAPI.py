@@ -21,7 +21,10 @@ async def create_category(cat: CategoryModel = Body(...)):
 
     if (category:= cat_collection.find_one({"categoryName": cat_info['categoryName']})) is not None:
         raise HTTPException(status_code=409, detail=f"Category {cat_info['categoryName']} already exists")
-        
+    
+    if (category:= cat_collection.find_one({"urlDisplay": cat_info['urlDisplay']})) is not None:
+        raise HTTPException(status_code=409, detail=f"Category {cat_info['urlDisplay']} already exists")
+    
     new_cat = cat_collection.insert_one(
         cat_info
     )
@@ -36,8 +39,8 @@ async def create_category(cat: CategoryModel = Body(...)):
     response_model=CategoryCollection,
     response_model_by_alias=False,
 )
-async def get_list_categories():
-    cats = cat_collection.find().to_list(100)
+async def get_list_categories(n: int = 100):
+    cats = cat_collection.find().to_list(n)
     return CategoryCollection(categories=cats)
 
 @router.get(

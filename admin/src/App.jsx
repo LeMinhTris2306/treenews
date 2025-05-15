@@ -16,6 +16,7 @@ import ArticlesPage from "./pages/ArticlesPage";
 import ArticleInfo from "./pages/ArticleInfo";
 import EditArticle from "./pages/EditArticle";
 import CreateArticle from "./pages/CreateArticles";
+import CategoryPage from "./pages/CategoryPage";
 import Header from "./components/layout/Header";
 import Alert from "./components/alert/Alert";
 
@@ -58,6 +59,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/users" element={<UserPage />} />
                     <Route path="/articles" element={<ArticlesPage />} />
+                    <Route path="/categories" element={<CategoryPage />} />
                     <Route path="/admin" element={<AdminDetail />} />
                     <Route path="/user/:userid" element={<UserDetail />} />
                     <Route

@@ -211,21 +211,25 @@ const AccountDetail = ({ user }) => {
                                         >
                                             Đăng xuất
                                         </button>
-                                        <button
-                                            className="btn btn-primary mx-3"
-                                            onClick={() => {
-                                                navigate("/createarticle");
-                                            }}
-                                        >
-                                            Tạo bài báo
-                                        </button>
+                                        {user.userType != "Reader" && (
+                                            <button
+                                                className="btn btn-primary mx-3"
+                                                onClick={() => {
+                                                    navigate("/createarticle");
+                                                }}
+                                            >
+                                                Tạo bài báo
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ListCreatedArticles author={user.id} />
+                {user.userType != "Reader" && (
+                    <ListCreatedArticles author={user.id} />
+                )}
             </section>
         </>
     );

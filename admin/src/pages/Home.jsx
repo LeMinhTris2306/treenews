@@ -93,7 +93,9 @@ const Home = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="card-footer">Xem</div>
+                                    <div className="card-footer">
+                                        <Link to={`/categories`}>Xem thêm</Link>
+                                    </div>
                                 </div>
                             </div>
                         )}

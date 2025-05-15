@@ -8,7 +8,7 @@ const CategoryOption = forwardRef((props, ref) => {
     useEffect(() => {
         const fetchListCategory = async () => {
             try {
-                const response = await getListCategory();
+                const response = await getListCategory(100);
                 setCategories(response.categories);
             } catch (error) {
                 console.error("Error fetching category:", error);

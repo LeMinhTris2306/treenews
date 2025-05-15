@@ -1,61 +1,12 @@
 import { useState, useEffect } from "react";
-import { useUser } from "../utils/hook/useUser";
-import { useNavigate } from "react-router-dom";
+import { useCategory } from "../utils/hook/useCategory";
 import { useForm } from "react-hook-form";
 import { useAlert } from "../utils/hook/useAlert";
 
-const UserPage = () => {
-    const renderPagination = (noPage) => {
-        const handlePageChange = (option) => {
-            if (option === "next" && currentPage < noPage - 1)
-                setCurrentPage(currentPage + 1);
-            else if (option === "previous" && currentPage > 0)
-                setCurrentPage(currentPage - 1);
-        };
-        const tmpArray = Array.from({ length: noPage }, (_, index) => index);
-        return (
-            <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
-                    <li className="page-item">
-                        <button
-                            className="page-link"
-                            aria-label="Previous"
-                            type="button"
-                            onClick={() => handlePageChange("previous")}
-                        >
-                            <span aria-hidden="true">&laquo;</span>
-                            <span className="sr-only">Previous</span>
-                        </button>
-                    </li>
-                    {tmpArray.map((key, index) => (
-                        <li className="page-item" key={key}>
-                            <button
-                                className="page-link"
-                                type="button"
-                                onClick={() => setCurrentPage(index)}
-                            >
-                                {index}
-                            </button>
-                        </li>
-                    ))}
-                    <li className="page-item">
-                        <button
-                            className="page-link"
-                            type="button"
-                            aria-label="Next"
-                            onClick={() => handlePageChange("next")}
-                        >
-                            <span aria-hidden="true">&raquo;</span>
-                            <span className="sr-only">Next</span>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
-        );
-    };
-    const { getUsers, createUser, deleteUser } = useUser();
+const CategoryPage = () => {
+    const { getListCategory, updateCategory, deleteCategory, createCategory } =
+        useCategory();
     const alert = useAlert();
-    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -63,37 +14,24 @@ const UserPage = () => {
         setError,
         reset,
     } = useForm();
-    const [users, setUsers] = useState(null);
-    const [displayUsers, setDisplayUsers] = useState(null);
-    const [keyword, setKeyword] = useState("");
-    const [noPage, setNoPage] = useState(0);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [categories, setCategories] = useState(null);
 
-    const fetchUsers = async (n) => {
-        const response = await getUsers(n);
+    const fetchCategories = async (n) => {
+        const response = await getListCategory(n);
 
-        if (response) {
-            setUsers(response.users);
-            setDisplayUsers(response.users);
-        }
+        if (response) setCategories(response.categories);
     };
     useEffect(() => {
-        fetchUsers(100);
+        fetchCategories(100);
     }, []);
 
-    useEffect(() => {
-        if (displayUsers && displayUsers != []) {
-            setNoPage(Math.ceil(displayUsers.length / 20));
-        }
-    }, [displayUsers]);
-
-    const onSubmit = async (RegisterData) => {
-        console.log(RegisterData);
-        const result = await createUser(RegisterData);
-
+    const onSubmit = async (data) => {
+        console.log(data);
+        const result = await createCategory(data);
+        console.log(result);
         try {
             if (result.type == "danger") {
-                setError("email", {
+                setError("categoryName", {
                     type: "manual",
                     message: result.message,
                 });
@@ -103,15 +41,15 @@ const UserPage = () => {
         } catch (error) {
             console.log(error);
         } finally {
-            fetchUsers(100);
+            fetchCategories(100);
         }
     };
 
     const handleDelete = async (id) => {
-        const result = confirm("Xác nhận xóa người dùng?");
+        const result = confirm("Xác nhận xóa thể loại?");
         if (result) {
             try {
-                const response = await deleteUser(id);
+                const response = await deleteCategory(id);
                 console.log(response);
                 if (response.type === "success") {
                     alert.success(response.message);
@@ -120,43 +58,29 @@ const UserPage = () => {
                 } else {
                     alert.warning("Có lỗi đã xảy ra, vui lòng thử lại sau");
                 }
-                fetchUsers(100);
+                fetchCategories(100);
             } catch (error) {
                 console.log(error);
             }
         }
     };
-
-    const onSearch = () => {
-        const result = users.filter((user) => {
-            const matchKeyword = keyword
-                ? user.email.toLowerCase().includes(keyword.toLowerCase())
-                : true;
-
-            return matchKeyword;
-        });
-        setDisplayUsers(result);
-        setCurrentPage(0); // reset lại trang về 0 khi tìm kiếm
-    };
     return (
         <div className="warpper">
             <div className="container bg-body-tertiary pt-5">
                 <div id="page-header">
-                    <h3>Quản lí người dùng</h3>
+                    <h3>Quản lí thể loại</h3>
                 </div>
                 <hr />
 
-                {users ? (
+                {categories ? (
                     <div id="user-manage-content">
                         <div id="user-table">
                             <table className="table table-hover">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Họ</th>
-                                        <th scope="col">Tên</th>
-                                        <th scope="col">Phân loại</th>
+                                        <th scope="col">Tên thể loại</th>
+                                        <th scope="col">Tên hiển thị</th>
                                         <th scope="col">
                                             <button
                                                 className="btn btn-outline-primary mx-1"
@@ -190,13 +114,16 @@ const UserPage = () => {
                                                                 className="modal-title fs-5"
                                                                 id="createUserLabel"
                                                             >
-                                                                Thêm User
+                                                                Thêm thể loại
                                                             </h1>
                                                             <button
                                                                 type="button"
                                                                 className="btn-close"
                                                                 data-bs-dismiss="modal"
                                                                 aria-label="Close"
+                                                                onClick={() =>
+                                                                    reset()
+                                                                }
                                                             ></button>
                                                         </div>
                                                         <div className="modal-body">
@@ -209,11 +136,11 @@ const UserPage = () => {
                                                                     <div className="form-floating mt-4">
                                                                         <input
                                                                             type="text"
-                                                                            id="createUserModalEmail"
+                                                                            id="createCategoryModalCategoryName"
                                                                             className="form-control"
-                                                                            placeholder="Email"
+                                                                            placeholder="Tên thể loại"
                                                                             {...register(
-                                                                                "email",
+                                                                                "categoryName",
                                                                                 {
                                                                                     required:
                                                                                         "Email không được bỏ trống",
@@ -222,15 +149,17 @@ const UserPage = () => {
                                                                         />
                                                                         <label
                                                                             className="form-label"
-                                                                            htmlFor="createUserModalEmail"
+                                                                            htmlFor="createCategoryModalCategoryName"
                                                                         >
-                                                                            Email
+                                                                            Tên
+                                                                            thể
+                                                                            loại
                                                                         </label>
-                                                                        {errors.email && (
+                                                                        {errors.categoryName && (
                                                                             <p className="text-start warning">
                                                                                 {
                                                                                     errors
-                                                                                        .email
+                                                                                        .categoryName
                                                                                         .message
                                                                                 }
                                                                             </p>
@@ -239,106 +168,40 @@ const UserPage = () => {
                                                                     <div className="form-floating mt-4">
                                                                         <input
                                                                             type="text"
-                                                                            id="createUserModalPassword"
+                                                                            id="createCategoryModalUrlDisplay"
                                                                             className="form-control"
-                                                                            placeholder="Mật khẩu"
+                                                                            placeholder="url hiển thị"
                                                                             {...register(
-                                                                                "password",
+                                                                                "urlDisplay",
                                                                                 {
                                                                                     required:
-                                                                                        "Mật khẩu không được bỏ trống",
+                                                                                        "tên hiển thị không được bỏ trống",
                                                                                 }
                                                                             )}
                                                                         />
                                                                         <label
                                                                             className="form-label"
-                                                                            htmlFor="createUserModalPassword"
+                                                                            htmlFor="createCategoryModalUrlDisplay"
                                                                         >
-                                                                            Mật
-                                                                            khẩu
+                                                                            Tên
+                                                                            hiển
+                                                                            thị
                                                                         </label>
-                                                                        {errors.password && (
+                                                                        <p>
+                                                                            ví
+                                                                            dụ:
+                                                                            the-thao-trong-nuoc
+                                                                        </p>
+                                                                        {errors.categoryName && (
                                                                             <p className="text-start warning">
                                                                                 {
                                                                                     errors
-                                                                                        .password
+                                                                                        .categoryName
                                                                                         .message
                                                                                 }
                                                                             </p>
                                                                         )}
                                                                     </div>
-                                                                    <div className="d-flex flex-row mt-4">
-                                                                        <div className="form-floating me-2">
-                                                                            <input
-                                                                                type="text"
-                                                                                id="createUserModalLastName"
-                                                                                className="form-control me-2"
-                                                                                placeholder="Họ"
-                                                                                {...register(
-                                                                                    "lastName",
-                                                                                    {
-                                                                                        required:
-                                                                                            "Họ không được bỏ trống",
-                                                                                    }
-                                                                                )}
-                                                                            />
-                                                                            <label
-                                                                                className="form-label"
-                                                                                htmlFor="createUserModalLastName"
-                                                                            >
-                                                                                Họ
-                                                                            </label>
-                                                                            {errors.lastName && (
-                                                                                <p className="text-start warning">
-                                                                                    {
-                                                                                        errors
-                                                                                            .lastName
-                                                                                            .message
-                                                                                    }
-                                                                                </p>
-                                                                            )}
-                                                                        </div>
-                                                                        <div className="form-floating ms-2">
-                                                                            <input
-                                                                                type="text"
-                                                                                id="createUserModalFirstName"
-                                                                                className="form-control me-2"
-                                                                                placeholder="Tên"
-                                                                                {...register(
-                                                                                    "firstName",
-                                                                                    {
-                                                                                        required:
-                                                                                            "Họ không được bỏ trống",
-                                                                                    }
-                                                                                )}
-                                                                            />
-                                                                            <label
-                                                                                className="form-label"
-                                                                                htmlFor="createUserModalFirstName"
-                                                                            >
-                                                                                Tên
-                                                                            </label>
-                                                                            {errors.firstName && (
-                                                                                <p className="text-start warning">
-                                                                                    {
-                                                                                        errors
-                                                                                            .firstName
-                                                                                            .message
-                                                                                    }
-                                                                                </p>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <input
-                                                                        type="number"
-                                                                        // id=""
-                                                                        className="form-control mt-4"
-                                                                        placeholder="Số điện thoại"
-                                                                        {...register(
-                                                                            "phoneNumber"
-                                                                        )}
-                                                                    />
                                                                 </div>
                                                                 <div className="mt-2 d-flex flex-row">
                                                                     <button
@@ -367,18 +230,11 @@ const UserPage = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {users.map((user, index) => (
-                                        <tr
-                                            key={user.id}
-                                            onClick={() =>
-                                                navigate(`/user/${user.id}`)
-                                            }
-                                        >
+                                    {categories.map((category, index) => (
+                                        <tr key={category.id}>
                                             <th scope="row">{index + 1}</th>
-                                            <td>{user.email}</td>
-                                            <td>{user.lastName}</td>
-                                            <td>{user.firstName}</td>
-                                            <td>{user.userType}</td>
+                                            <td>{category.categoryName}</td>
+                                            <td>{category.urlDisplay}</td>
                                             <td>
                                                 <div className="d-flex flex-row">
                                                     <button
@@ -386,7 +242,7 @@ const UserPage = () => {
                                                         onClick={(e) => {
                                                             e.stopPropagation(); // ngăn click lan ra dòng
                                                             handleDelete(
-                                                                user.id
+                                                                category.id
                                                             );
                                                         }}
                                                     >
@@ -407,7 +263,6 @@ const UserPage = () => {
                                 </tbody>
                             </table>
                         </div>
-                        {renderPagination(noPage)}
                     </div>
                 ) : (
                     <p>loading...</p>
@@ -417,4 +272,4 @@ const UserPage = () => {
     );
 };
 
-export default UserPage;
+export default CategoryPage;

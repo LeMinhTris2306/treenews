@@ -3,8 +3,8 @@ import { variables } from "./variables";
 
 const API_URL = variables.CATEGORY_URL;
 
-const getListCategory = async () => {
-    const response = await axios.get(`${API_URL}`);
+const getListCategory = async (n) => {
+    const response = await axios.get(`${API_URL}?n=${n}`);
     return response.data;
 };
 
